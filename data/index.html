@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireless Network Detector</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="appContent">
+    <header class="site-header">
+      <div class="clock" id="clock">--:--:--</div>
+      <h1>WIRELESS NETWORK DETECTOR</h1>
+      <div class="header-status">
+        <div id="connStatus" class="conn-status disconnected">CONNECTING</div>
+        <div class="diag-line">
+          <span id="msgCount">0</span> msgs &middot; last <span id="lastMsgAgo">&mdash;</span> &middot; <span id="reconnectCount">0</span> reconnects
+        </div>
+      </div>
+    </header>
+
+    <section class="mode-strip" aria-label="Active mode">
+      <div id="modeWifi" class="mode-chip">WIFI</div>
+      <div id="modeBluetooth" class="mode-chip">BLUETOOTH</div>
+      <div id="modeCellular" class="mode-chip">CELLULAR</div>
+    </section>
+
+    <main class="panel-grid">
+      <section class="cyber-panel wifi-panel">
+        <div class="panel-head">
+          <h2>WiFi</h2>
+          <span id="wifiSweepBadge" class="badge hidden">SWEEPING</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-value" id="wifiSigCount">0</div>
+            <div class="stat-label">signatures</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="wifiHotspotCount">0</div>
+            <div class="stat-label">hotspots</div>
+          </div>
+        </div>
+        <h3 class="sub-head">Signatures</h3>
+        <ul id="wifiSigList" class="entry-list"></ul>
+        <h3 class="sub-head">Hotspots</h3>
+        <ul id="wifiHotspotList" class="entry-list"></ul>
+      </section>
+
+      <section class="cyber-panel bt-panel">
+        <div class="panel-head">
+          <h2>Bluetooth</h2>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-value" id="btCount">0</div>
+            <div class="stat-label">devices</div>
+          </div>
+        </div>
+        <h3 class="sub-head">Devices</h3>
+        <ul id="btList" class="entry-list"></ul>
+      </section>
+
+      <section class="cyber-panel cell-panel">
+        <div class="panel-head">
+          <h2>Cellular</h2>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-value" id="cellStrength">0%</div>
+            <div class="stat-label">last signal</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="cellEventCount">0</div>
+            <div class="stat-label">events</div>
+          </div>
+        </div>
+        <canvas id="cellWaveform" class="cell-waveform" width="1200" height="180"></canvas>
+        <p class="waveform-note">
+          Only populated while Cellular mode is active. The WiFi radio is
+          switched off during that mode so it can't interfere with this
+          reading, so the dashboard is offline for the duration and this
+          fills in once it reconnects, not live.
+        </p>
+        <h3 class="sub-head">Event log</h3>
+        <ul id="cellList" class="entry-list"></ul>
+      </section>
+
+      <section class="cyber-panel console-panel">
+        <div class="panel-head">
+          <h2>Activity</h2>
+          <span class="panel-hint">live feed of every event received, most recent first</span>
+        </div>
+        <div id="consoleLog" class="console-log"></div>
+      </section>
+    </main>
+
+    <p class="note">
+      Lists show the most recent entries retained by the device, not a complete
+      unbounded log. Counts reset when a mode is reactivated after being stopped.
+    </p>
+  </div>
+
+  <div id="disconnectOverlay" class="disconnect-overlay">
+    <div id="disconnectBox" class="disconnect-box">
+      <div id="disconnectTitle" class="disconnect-title">Connection lost</div>
+      <div id="disconnectMessage" class="disconnect-message">
+        Reconnecting to the detector...
+      </div>
+      <div class="disconnect-spinner"></div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cyber Network Detector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="theme-config">
+    :root {
+      --neon-green: #4ade80;
+      --neon-glow: 0 0 10px rgba(74, 222, 128, 0.5), 0 0 20px rgba(74, 222, 128, 0.3);
+      --bg-dark: #0a0f0d;
+      --panel-bg: rgba(10, 20, 15, 0.8);
+      --panel-border: rgba(74, 222, 128, 0.3);
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--neon-green);
+      font-family: 'Share Tech Mono', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.2) 2px,
+        rgba(0, 0, 0, 0.2) 4px
+      );
+    }
+    .neon-text {
+      text-shadow: var(--neon-glow);
+    }
+    .cyber-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      position: relative;
+      box-shadow: inset 0 0 15px rgba(74, 222, 128, 0.05);
+    }
+    .cyber-panel::before, .cyber-panel::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--neon-green);
+    }
+    .cyber-panel::before {
+      top: -1px;
+      left: -1px;
+      border-right: none;
+      border-bottom: none;
+    }
+    .cyber-panel::after {
+      bottom: -1px;
+      right: -1px;
+      border-left: none;
+      border-top: none;
+    }
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+    
+    /* Custom Scrollbar for table */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 255, 136, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--neon-green);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="p-4 flex flex-col gap-4">
+<!-- BEGIN: Header -->
+<header class="flex justify-between items-center mb-2 px-4" data-purpose="dashboard-header">
+<div class="text-4xl font-bold neon-text w-1/4">22:45:09 <span class="text-2xl neon-text">UTC</span></div>
+<div class="text-2xl tracking-widest text-center flex-grow neon-text">ENHANCED CYBER NETWORK DETECTOR DASHBOARD</div>
+<div class="flex items-center justify-end gap-2 w-1/4">
+<span class="text-sm">SYSTEM STATUS: <span class="text-green-400 neon-text">ONLINE</span></span>
+<svg class="w-8 h-8 text-green-400 pulse-animation" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Main Content Grid -->
+<main class="flex-grow grid grid-cols-12 grid-rows-6 gap-4 h-full" data-purpose="dashboard-layout">
+<!-- RSSI History Column -->
+<section class="col-span-3 row-span-4 flex flex-col gap-4">
+<div class="cyber-panel p-4 flex-grow flex flex-col">
+<h2 class="text-lg mb-2">RSSI HISTORY</h2>
+<div class="text-xs mb-2 text-green-400 opacity-80">Selected Network: HomeWiFi <span class="float-right cursor-pointer">v</span></div>
+<div class="relative flex-grow border-l border-b border-green-800 mt-2">
+<!-- Placeholder for Chart -->
+<div class="absolute bottom-0 left-0 w-full h-full flex items-end">
+<svg class="w-full h-full text-green-500 opacity-70" preserveaspectratio="none" viewbox="0 0 100 100">
+<polyline fill="none" points="0,50 5,60 10,40 15,70 20,30 25,50 30,80 35,40 40,60 45,20 50,70 55,50 60,80 65,30 70,60 75,40 80,70 85,30 90,50 95,40 100,50" stroke="currentColor" stroke-width="1.5"></polyline>
+</svg>
+</div>
+<!-- Y Axis Labels -->
+<div class="absolute left-[-20px] top-0 text-[10px]">100</div>
+<div class="absolute left-[-15px] top-[25%] text-[10px]">75</div>
+<div class="absolute left-[-15px] top-[50%] text-[10px]">50</div>
+<div class="absolute left-[-15px] top-[75%] text-[10px]">25</div>
+<div class="absolute left-[-10px] bottom-0 text-[10px]">0</div>
+</div>
+</div>
+<div class="cyber-panel p-2">
+<span class="text-sm">ACTIVE CONNECTIONS: 14</span>
+</div>
+</section>
+<!-- Central Decorative Panel -->
+<section class="col-span-2 row-span-4 cyber-panel p-2 flex items-center justify-center relative overflow-hidden">
+<!-- Circuitry/Hexagon placeholder graphics -->
+<div class="absolute inset-0 border-x border-green-500 opacity-30 mx-8"></div>
+<div class="w-full h-1/2 border-y border-green-500 opacity-30"></div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-32 border border-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)] bg-[rgba(74,222,128,0.1)] rounded-md"></div>
+</section>
+<!-- Probes and Controls -->
+<section class="col-span-3 row-span-4 flex flex-col gap-4">
+<div class="cyber-panel p-4 flex flex-col items-center justify-center flex-grow">
+<h2 class="text-lg mb-4 w-full text-center border-b border-green-800 pb-2">PROBE STATUS</h2>
+<div class="text-sm mb-4">ACTIVE PROBES: 3/3</div>
+<div class="flex gap-4 justify-center">
+<!-- Icons placeholers -->
+<div class="w-12 h-12 border border-green-500 rounded-full flex items-center justify-center p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="w-12 h-12 border border-green-500 rounded-full flex items-center justify-center p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+<div class="w-12 h-12 border border-green-500 rounded-full flex items-center justify-center p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</div>
+<div class="cyber-panel p-4 flex flex-col items-center justify-center flex-grow">
+<h2 class="text-lg mb-6 w-full text-center border-b border-green-800 pb-2">SCANNING CONTROL</h2>
+<div class="text-sm mb-4">START/STOP SCAN</div>
+<!-- Toggle Switch -->
+<div class="relative w-24 h-12 rounded-full border border-green-500 bg-[rgba(74,222,128,0.2)] p-1 cursor-pointer">
+<div class="w-10 h-10 bg-green-400 rounded-full absolute right-1 shadow-[0_0_15px_#4ade80]"></div>
+</div>
+<div class="mt-6 text-sm">STATUS: <span class="text-green-400">SCANNING</span></div>
+</div>
+</section>
+<!-- Detected Networks Table -->
+<section class="col-span-4 row-span-4 cyber-panel p-4 flex flex-col">
+<h2 class="text-lg mb-2">DETECTED NETWORKS</h2>
+<div class="flex-grow overflow-auto pr-2">
+<table class="w-full text-sm text-left">
+<thead class="text-xs text-green-500 border-b border-green-800 sticky top-0 bg-[var(--bg-dark)] z-10">
+<tr>
+<th class="py-2">SSID</th>
+<th class="py-2">MAC ADDRESS</th>
+<th class="py-2">RSSI (dBm)</th>
+<th class="py-2 text-right">CHANNEL</th>
+</tr>
+</thead>
+<tbody class="opacity-80">
+<!-- Table rows (sample data to match image visually) -->
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 HomeWiFi</td><td>(E4:1F:5C:AA:BB:CC)</td><td>-55</td><td class="text-right">6</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet</td><td>(C2:3D:4E:11:22:33)</td><td>-72</td><td class="text-right">1</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet</td><td>(C3:BE:32:52:3C:33)</td><td>-72</td><td class="text-right">1</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet</td><td>(E4:1F:5C:AA:BB:CC)</td><td>-47</td><td class="text-right">2</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet</td><td>(C2:3D:4E:32:22:33)</td><td>-73</td><td class="text-right">1</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 HomeWiFi</td><td>(E4:1F:5C:AA:BB:CC)</td><td>-55</td><td class="text-right">6</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet2</td><td>(D2:5E:3E:00:3B:33)</td><td>-50</td><td class="text-right">3</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 HomeWiFi</td><td>(C2:3D:4E:32:22:33)</td><td>-55</td><td class="text-right">4</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 GuestNet3</td><td>(D2:AE:32:32:3B:33)</td><td>-50</td><td class="text-right">3</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">📶 Wi-Fi</td><td>(EC:2F:4F:3B:B6:97)</td><td>-53</td><td class="text-right">1</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">📶 HomeWiFi</td><td>(E4:1F:5C:AA:BB:CC)</td><td>-70</td><td class="text-right">6</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">🔒 Anumeniobiiam</td><td>(E4:2F:5C:AA:BB:CE)</td><td>-73</td><td class="text-right">6</td></tr>
+<tr class="border-b border-green-900/30 hover:bg-green-900/20"><td class="py-1">👾 GuestNet</td><td>(C2:3D:4E:11:22:33)</td><td>-72</td><td class="text-right">1</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Console Log -->
+<section class="col-span-8 row-span-2 cyber-panel p-4 flex flex-col">
+<div class="flex justify-between items-center mb-2 border-b border-green-800 pb-1">
+<h2 class="text-sm">CONSOLE</h2>
+<div class="text-xs space-x-2"><span>_</span><span>☐</span><span>X</span></div>
+</div>
+<div class="text-xs overflow-auto flex-grow font-mono opacity-80 leading-relaxed">
+<div>22:45:01 <span class="text-blue-400">[WebSocket]</span> Connection established with ESP32</div>
+<div>22:45:05 <span class="text-green-300">[INFO]</span> Client A data packet received, 512 bytes</div>
+<div>22:45:05 <span class="text-yellow-400">[WARNING]</span> Client C reconnected</div>
+<div>22:45:08 <span class="text-blue-400">[WebSocket]</span> Sending control command to ESP32</div>
+<div>22:45:09 <span class="text-green-300">[INFO]</span> System check complete. All systems nominal.</div>
+<div class="mt-2 text-green-500">user@cyber-node:~$ <span class="inline-block w-2 h-4 bg-green-500 animate-pulse align-middle"></span></div>
+</div>
+</section>
+<!-- Channel Distribution Chart -->
+<section class="col-span-4 row-span-2 flex flex-col gap-2">
+<div class="cyber-panel p-4 flex-grow flex flex-col relative">
+<div class="flex justify-between items-center mb-2 border-b border-green-800 pb-1">
+<h2 class="text-sm">CHANNEL DISTRIBUTION</h2>
+<div class="text-xs space-x-2"><span>_</span><span>☐</span><span>X</span></div>
+</div>
+<div class="relative flex-grow border-l border-b border-green-800 mt-2 px-2 pb-4 pt-2 flex items-end justify-between gap-1">
+<!-- Y Axis -->
+<div class="absolute left-[-20px] top-0 text-[10px]">100</div>
+<div class="absolute left-[-15px] top-[25%] text-[10px]">75</div>
+<div class="absolute left-[-15px] top-[50%] text-[10px]">50</div>
+<div class="absolute left-[-15px] top-[75%] text-[10px]">25</div>
+<div class="absolute left-[-10px] bottom-4 text-[10px]">0</div>
+<!-- Bars -->
+<div class="w-full bg-green-500 h-[60%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[20%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[70%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[35%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[45%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[80%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[35%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[10%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[25%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[30%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[40%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[10%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<div class="w-full bg-green-500 h-[5%] opacity-80 shadow-[0_0_5px_#4ade80]"></div>
+<!-- X Axis Labels -->
+<div class="absolute bottom-[-15px] left-[5%] text-[10px]">1</div>
+<div class="absolute bottom-[-15px] left-[20%] text-[10px]">6</div>
+<div class="absolute bottom-[-15px] left-[35%] text-[10px]">11</div>
+<div class="absolute bottom-[-15px] left-[50%] text-[10px]">17</div>
+<div class="absolute bottom-[-15px] left-[65%] text-[10px]">18</div>
+<div class="absolute bottom-[-15px] left-[80%] text-[10px]">25</div>
+<div class="absolute bottom-[-15px] right-[5%] text-[10px]">35</div>
+</div>
+</div>
+<!-- Footer Nav -->
+<div class="flex justify-end gap-2 mt-auto">
+<button class="px-4 py-1 border border-green-500 text-xs hover:bg-green-500/20 transition-colors rounded-sm">SETTINGS</button>
+<button class="px-4 py-1 border border-green-500 text-xs hover:bg-green-500/20 transition-colors rounded-sm">LOGS</button>
+<button class="px-4 py-1 border border-green-500 text-xs hover:bg-green-500/20 transition-colors rounded-sm">ALERT CONFIG</button>
+<button class="px-4 py-1 border border-green-500 text-xs hover:bg-green-500/20 transition-colors rounded-sm">LOGOUT</button>
+</div>
+</section>
+</main>
+<!-- END: Main Content Grid -->
+</body></html>
