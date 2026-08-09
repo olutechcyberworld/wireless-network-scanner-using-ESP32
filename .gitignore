@@ -3,5 +3,4 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-
-but if the phone is catchable why is the is it not detectable anymore not until i enter the bluetooth settings/pairing mode before its been seen again and why I'm trying to stress test and try to patch all the easy to catch gap on the presentation day they might say the device lack alot if it can't detect available device even when they are communicating silently and trust me what they will ask is "if you say this device is wirelees network detector to be use in exam hall and can't detect when student is sliently detect a student is using the bluetooth ccommunication silently so i suggest if we're to enter active scanning to solve this because we already have one hard limitation which is cellular network 
+components/esp_littlefs

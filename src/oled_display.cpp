@@ -151,6 +151,38 @@ static void oledTask(void *pvParameters) {
     }
 }
 
+// Holds one boot-splash screen for holdMs, animating a simple
+// cycling ellipsis so the screen still visibly "loads" even though
+// its text is static, this is what carries the loading feel across
+// several distinct screens now that the splash is no longer a
+// single crowded page. Purely cosmetic, like the bar it replaces:
+// the animation timing has no relationship to real subsystem
+// initialization progress, none of WiFi/Bluetooth/dashboard bring-up
+// is sequenced through this function.
+static void bootScreenHold(const char *line1, const char *line2, uint32_t holdMs) {
+    const uint32_t DOT_INTERVAL_MS = 350;
+    uint32_t elapsed = 0;
+    int frame = 0;
+
+    while (elapsed < holdMs) {
+        display.clearDisplay();
+        display.setTextSize(1);
+        display.setTextColor(SSD1306_WHITE);
+        display.setCursor(0, 20);
+        display.println(line1);
+        if (line2 && line2[0] != '\0') {
+            display.setCursor(0, 34);
+            display.println(line2);
+        }
+        display.setCursor(0, 52);
+        for (int i = 0; i < (frame % 4); i++) display.print('.');
+        display.display();
+        delay(DOT_INTERVAL_MS);
+        elapsed += DOT_INTERVAL_MS;
+        frame++;
+    }
+}
+
 void oled_display_init() {
     statusMutex = xSemaphoreCreateMutex();
 
@@ -160,50 +192,24 @@ void oled_display_init() {
         return;
     }
 
-    // Boot splash. Intentionally blocking, this runs once during
-    // setup() before any other subsystem needs the display, and
-    // keeps this screen visible for a fixed, predictable duration
-    // rather than racing the first real status render.
-    //
-    // The loading bar is cosmetic, its fill rate is just this loop's
-    // own iteration count against BOOT_STEPS, it is not wired to any
-    // real subsystem's initialization progress (WiFi/Bluetooth/
-    // dashboard bring-up all happen later in setup(), after this
-    // function returns). Making it track real progress would need
-    // hooks into each subsystem's own init call; that's a legitimate
-    // future improvement, not something to fake with a progress bar
-    // that only looks like it means something.
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(SSD1306_WHITE);
-    display.setCursor(0, 0);
-    display.println("WIRELESS NETWORK");
-    display.setCursor(0, 10);
-    display.println("DETECTOR");
-    display.setCursor(0, 24);
-    display.println("Project by:");
-    display.setCursor(0, 34);
-    display.println("Fabiku Tolulope");
-    display.setCursor(0, 44);
+    // Boot splash, now a short sequence of distinct screens rather
+    // than one page carrying five lines of unrelated information at
+    // once. Intentionally blocking, runs once during setup() before
+    // any other subsystem needs the display. Total hold across all
+    // screens is roughly 6 seconds, deliberately unhurried for a
+    // device that will be watched during a demonstration or defense,
+    // adjust the individual holdMs values below if that's too slow
+    // for routine bring-up testing.
+    bootScreenHold("Powering up", "", 1000);
+    bootScreenHold("Booting...", "Please wait", 1200);
+    bootScreenHold("Developed by:", "", 700);
+    bootScreenHold("Fabiku Tolulope", "", 1000);
     // 21 characters at the default 6px-per-character font is 126px
-    // against a 128px-wide display, this fits but with almost no
-    // margin, confirm it isn't clipped on the actual panel at bring
-    // -up, screen geometry can vary slightly between SSD1306 units.
-    display.println("Aladetoyinbo Increase");
-
-    const int barX = 4, barY = 56, barW = 120, barH = 6;
-    const int BOOT_STEPS = 24;
-    const int STEP_DELAY_MS = 60;  // 24 * 60 = 1440ms, close to the previous fixed 1500ms hold
-
-    for (int step = 0; step <= BOOT_STEPS; step++) {
-        // Fill only grows each iteration, safe to redraw without
-        // clearing the bar first, the new fill fully covers the old.
-        int fillW = (barW - 2) * step / BOOT_STEPS;
-        display.drawRect(barX, barY, barW, barH, SSD1306_WHITE);
-        display.fillRect(barX + 1, barY + 1, fillW, barH - 2, SSD1306_WHITE);
-        display.display();
-        delay(STEP_DELAY_MS);
-    }
+    // against a 128px-wide display, fits but with almost no margin,
+    // confirm it isn't clipped on the actual panel, screen geometry
+    // can vary slightly between SSD1306 units.
+    bootScreenHold("Aladetoyinbo", "Increase", 1000);
+    bootScreenHold("WIRELESS NETWORK", "DETECTOR", 1000);
 
     display.clearDisplay();
     display.display();

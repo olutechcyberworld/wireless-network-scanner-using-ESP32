@@ -75,6 +75,14 @@ static SemaphoreHandle_t stateMutex;
 
 static httpd_handle_t server = NULL;
 static int wsClients[DASHBOARD_MAX_WS_CLIENTS];
+// Parallel to wsClients: when each slot was registered. Cleanup of a
+// dead slot is otherwise purely reactive (removeClientFd() only runs
+// when a future send against it fails), so a client that disconnects
+// without any broadcast happening afterward can squat on a slot
+// indefinitely. This timestamp is what lets a full table evict the
+// oldest tracked slot instead of refusing a definitely-live new
+// connection, see the registration logic in wsHandler.
+static uint32_t wsClientRegisteredAt[DASHBOARD_MAX_WS_CLIENTS];
 static SemaphoreHandle_t clientsMutex;
 
 // ---- small helpers ----
@@ -478,16 +486,36 @@ static esp_err_t wsHandler(httpd_req_t *req) {
             return ESP_FAIL;
         }
 
-        bool registered = false;
+        int slot = -1;
         xSemaphoreTake(clientsMutex, portMAX_DELAY);
         for (int i = 0; i < DASHBOARD_MAX_WS_CLIENTS; i++) {
-            if (wsClients[i] < 0) { wsClients[i] = fd; registered = true; break; }
+            if (wsClients[i] < 0) { slot = i; break; }
         }
+        if (slot < 0) {
+            // Every slot is occupied by a socket this server still
+            // believes is live, but cleanup is otherwise reactive
+            // only (removeClientFd() runs on a failed send), so a
+            // client that disconnected without any broadcast
+            // happening afterward can squat on a slot indefinitely.
+            // This was confirmed happening on real hardware: the
+            // table filled during ordinary mode-switching and a
+            // genuinely new connection was silently refused live
+            // updates as a result. Evict the oldest tracked slot
+            // rather than refuse the connection in front of us, a
+            // slot that's still genuinely live will simply fail its
+            // next send and reconnect on its own, the same as any
+            // other dropped connection already does.
+            int oldestIdx = 0;
+            for (int i = 1; i < DASHBOARD_MAX_WS_CLIENTS; i++) {
+                if (wsClientRegisteredAt[i] < wsClientRegisteredAt[oldestIdx]) oldestIdx = i;
+            }
+            Serial.printf("[Dashboard] WS handshake: client table full, evicting oldest tracked fd=%d to admit fd=%d\n",
+                wsClients[oldestIdx], fd);
+            slot = oldestIdx;
+        }
+        wsClients[slot] = fd;
+        wsClientRegisteredAt[slot] = millis();
         xSemaphoreGive(clientsMutex);
-        if (!registered) {
-            Serial.printf("[Dashboard] WS handshake: client table full (max %d), fd=%d not tracked, will not receive live updates\n",
-                DASHBOARD_MAX_WS_CLIENTS, fd);
-        }
 
         xSemaphoreTake(stateMutex, portMAX_DELAY);
         String snap = buildSnapshotJson();
@@ -580,7 +608,10 @@ void dashboard_server_init() {
     stateMutex = xSemaphoreCreateMutex();
     clientsMutex = xSemaphoreCreateMutex();
     memset(&state, 0, sizeof(state));
-    for (int i = 0; i < DASHBOARD_MAX_WS_CLIENTS; i++) wsClients[i] = -1;
+    for (int i = 0; i < DASHBOARD_MAX_WS_CLIENTS; i++) {
+        wsClients[i] = -1;
+        wsClientRegisteredAt[i] = 0;
+    }
 
     // Partition label "spiffs" matches partitions.csv's Name column
     // for the LittleFS-formatted data partition (label is just an
